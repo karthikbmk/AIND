@@ -43,9 +43,9 @@ def naked_twins(values):
     # Find all instances of naked twins
     # Eliminate the naked twins as possibilities for their peers
 
+    
 
-    #print('Before:',display(values))
-
+    #Iterate over all units
     for unit in unitlist:
         val_boxes = defaultdict(list)    	
         for box in unit:
@@ -53,16 +53,16 @@ def naked_twins(values):
                 val_boxes[values[box]].append(box)
 
         for val,box_list in val_boxes.items():	    	
-            if len(box_list) == 2:
-                #print (unit,box_list)
+        	#If it is a twin
+            if len(box_list) == 2:                
                 other_boxes = set(unit) - set(box_list)
+                #Remove twin from other boxes
                 for oth_box in other_boxes:
                     for v in val:
                         if v in values[oth_box]:
                             assign_value(values, oth_box, values[oth_box].replace(v, ''))
                             #values[oth_box] = values[oth_box].replace(v, '')
-
-    #print('After:',display(values))
+    
     return values
 def grid_values(grid):
     """
@@ -101,17 +101,25 @@ def display(values):
 
 def eliminate(values):
 
+	'''Eliminate using usual technique in quizes + new naked_twins technique'''
+
     solved_values = [box for box in values.keys() if len(values[box]) == 1]
     for box in solved_values:
         digit = values[box]
         for peer in peers[box]:   
-            assign_value(values, peer, values[peer].replace(digit,''))         
-            #values[peer] = values[peer].replace(digit,'')
+            assign_value(values, peer, values[peer].replace(digit,''))                     
     return naked_twins(values)
      
 
 def only_choice(values):
+    """Finalize all valbues that are the only choice for a unit.
 
+    Go through all the units, and whenever there is a unit with a value
+    that only fits in one box, assign the value to this box.
+
+    Input: Sudoku in dictionary form.
+    Output: Resulting Sudoku in dictionary form after filling in only choices.
+    """	
     new_values = values.copy()  # note: do not modify original values
     # TODO: Implement only choice strategy here
     
@@ -148,11 +156,17 @@ def reduce_puzzle(values):
     return values    
 
 def search(values):    
+	"Using depth-first search and propagation, create a search tree and solve the sudoku."
+
+	#Reduce search space
     values = reduce_puzzle(values)
     if values != False:
-
+	
+		#If solved, return sudoku board    	
         if isSolved(values):                        
             return values
+
+        #If not solved, smallest box and recurse
         else:
 
             min_len = 99
@@ -170,7 +184,7 @@ def search(values):
                     return x    
 
 def isSolved(values):
-    
+    '''Helper function to check if sudoku is solved'''
     for k,v in values.items():
         if len(v) != 1:
             return False
