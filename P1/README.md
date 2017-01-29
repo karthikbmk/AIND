@@ -3,11 +3,11 @@
 
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?  
-A: *Student should provide answer here*
+A: Call naked_twins(values) in eliminate(values). This ensures along with the usual elimination, if in any unit there are twin boxes,then any other boxes in the same unit will be checked for twins and the twin value will be removed from them.
 
 # Question 2 (Diagonal Sudoku)
 Q: How do we use constraint propagation to solve the diagonal sudoku problem?  
-A: *Student should provide answer here*
+A: Just add left-diagonal and right-diagonal boxes to the unitlist global variable in solution.py. 
 
 ### Install
 
