@@ -101,7 +101,7 @@ def display(values):
 
 def eliminate(values):
 
-	'''Eliminate using usual technique in quizes + new naked_twins technique'''
+    '''Eliminate using usual technique in quizes + new naked_twins technique'''
 
     solved_values = [box for box in values.keys() if len(values[box]) == 1]
     for box in solved_values:
@@ -156,13 +156,13 @@ def reduce_puzzle(values):
     return values    
 
 def search(values):    
-	"Using depth-first search and propagation, create a search tree and solve the sudoku."
+    "Using depth-first search and propagation, create a search tree and solve the sudoku."
 
-	#Reduce search space
+    #Reduce search space
     values = reduce_puzzle(values)
     if values != False:
-	
-		#If solved, return sudoku board    	
+    
+        #If solved, return sudoku board    	
         if isSolved(values):                        
             return values
 
