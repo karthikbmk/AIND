@@ -170,11 +170,13 @@ class CustomPlayer:
                 to pass the project unit tests; you cannot call any other
                 evaluation function directly.
         """
+        
+
         if self.time_left() < self.TIMER_THRESHOLD:
             raise Timeout()
 
-        if (depth == 0):                    
-            return self.score(game,game.active_player),(-1,-1) 
+        if (depth == 0):                                
+            return self.score(game,self),(-1,-1) 
         
         moves = game.get_legal_moves()
         util_queue = []
@@ -193,40 +195,7 @@ class CustomPlayer:
         best_move = moves[util_queue.index(best_score)]
         
         return best_score, best_move
-
-        '''
-        # TODO: finish this function!
-        #max_score = - 99
-        #Best_move = (-1, -1)
-
-        #for legal_move in legal_moves:
-            #place cur_board = board with legal_move:
-                #if (evaluate(cur_board) > max_score):
-                # max_score = cur_score
-                # best_move = legal_move
-        #raise NotImplementedError
-
-        if (maximizing_player):
-            best_score = -999999
-        else:
-            best_score = 999999
-
-        best_move = (-1, -1)
-
-        moves = game.get_legal_moves()        
-        for move in moves:
-            cur_board = game.forecast_move(move)
-            score = self.score(cur_board,game.active_player)                           
-            if (maximizing_player):         
-                if (score > best_score):
-                    best_score = score
-                    best_move = move
-            else:
-                if (score < best_score):
-                    best_score = score
-                    best_move = move                
-        return best_score,best_move
-        '''
+     
         
 
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf"), maximizing_player=True):
@@ -271,4 +240,5 @@ class CustomPlayer:
             raise Timeout()
 
         # TODO: finish this function!
+        return self.minimax(game, depth,True)
         raise NotImplementedError
