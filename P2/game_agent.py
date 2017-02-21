@@ -201,10 +201,12 @@ class CustomPlayer:
         if (depth == 0):                                
             return self.score(game,self),(-1,-1)     
                         
-        moves = game.get_legal_moves()
-        util_queue = []
+        moves = game.get_legal_moves()        
 
-        for move in moves:                                 
+        max_score = -9999
+        max_move_idx = -1
+
+        for idx,move in enumerate(moves):                                 
             new_game = game.forecast_move(move)                          
             next_player = not maximizing_player
             score,_move = self.min_val(new_game, depth-1,alpha, beta, next_player)            
@@ -212,19 +214,24 @@ class CustomPlayer:
                 alpha = score
             if (score >= beta):                
                 return score,_move#check this
-            util_queue.append(score)
 
-        return max(util_queue),moves[util_queue.index(max(util_queue))]
+            if score > max_score:
+                max_score = score
+                max_move_idx = idx            
+
+        return max_score,moves[max_move_idx]
 
     def min_val(self, game, depth, alpha, beta,maximizing_player):
 
         if (depth == 0):                                
             return self.score(game,self),(-1,-1)     
                         
-        moves = game.get_legal_moves()
-        util_queue = []
+        moves = game.get_legal_moves()        
 
-        for move in moves:                                 
+        min_score = +9999
+        min_move_idx = -1        
+
+        for idx,move in enumerate(moves):                                 
             new_game = game.forecast_move(move)                          
             next_player = not maximizing_player
             score,_move = self.max_val(new_game, depth-1,alpha, beta, next_player)            
@@ -232,9 +239,12 @@ class CustomPlayer:
                 beta = score
             if (score <= alpha):                
                 return score,_move#check this
-            util_queue.append(score)
 
-        return min(util_queue),moves[util_queue.index(min(util_queue))]
+            if score < min_score:
+                min_score = score
+                min_move_idx = idx            
+
+        return min_score,moves[min_move_idx]
 
 
 
