@@ -116,21 +116,33 @@ class CustomPlayer:
             (-1, -1) if there are no available legal moves.
         """
 
-        self.time_left = time_left
-
+        self.time_left = time_left        
         # TODO: finish this function!
 
         # Perform any required initializations, including selecting an initial
         # move from the game board (i.e., an opening book), or returning
         # immediately if there are no legal moves
-
+        
         try:
             # The search method call (alpha beta or minimax) should happen in
             # here in order to avoid timeout. The try/except block will
             # automatically catch the exception raised by the search method
             # when the timer gets close to expiring            
-            sc,move = self.minimax(game, 1,True)
-            pass
+
+            if self.iterative == True:
+                depth =1 
+                while(self.time_left() >= 30):
+                    if self.method == 'minimax':
+                        sc,move = self.minimax(game, depth, True)
+                    else:
+                        sc,move = self.alphabeta(game, depth, float("-inf"), float("inf"), True)
+                    depth += 1
+            else:                
+                if self.method == 'minimax':
+                    sc,move = self.minimax(game, 1, True)
+                else:
+                    sc,move = self.alphabeta(game, 1, float("-inf"), float("inf"), True)                    
+                
 
         except Timeout:
             # Handle any actions required at timeout, if necessary
