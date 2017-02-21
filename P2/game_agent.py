@@ -196,7 +196,47 @@ class CustomPlayer:
         
         return best_score, best_move
      
-        
+    def max_val(self, game, depth, alpha, beta,maximizing_player):
+
+        if (depth == 0):                                
+            return self.score(game,self),(-1,-1)     
+                        
+        moves = game.get_legal_moves()
+        util_queue = []
+
+        for move in moves:                                 
+            new_game = game.forecast_move(move)                          
+            next_player = not maximizing_player
+            score,_move = self.min_val(new_game, depth-1,alpha, beta, next_player)            
+            if (score > alpha):
+                alpha = score
+            if (score >= beta):                
+                return score,_move#check this
+            util_queue.append(score)
+
+        return max(util_queue),moves[util_queue.index(max(util_queue))]
+
+    def min_val(self, game, depth, alpha, beta,maximizing_player):
+
+        if (depth == 0):                                
+            return self.score(game,self),(-1,-1)     
+                        
+        moves = game.get_legal_moves()
+        util_queue = []
+
+        for move in moves:                                 
+            new_game = game.forecast_move(move)                          
+            next_player = not maximizing_player
+            score,_move = self.max_val(new_game, depth-1,alpha, beta, next_player)            
+            if (score < beta):
+                beta = score
+            if (score <= alpha):                
+                return score,_move#check this
+            util_queue.append(score)
+
+        return min(util_queue),moves[util_queue.index(min(util_queue))]
+
+
 
     def alphabeta(self, game, depth, alpha=float("-inf"), beta=float("inf"), maximizing_player=True):
         """Implement minimax search with alpha-beta pruning as described in the
@@ -236,9 +276,10 @@ class CustomPlayer:
                 to pass the project unit tests; you cannot call any other
                 evaluation function directly.
         """
+        
         if self.time_left() < self.TIMER_THRESHOLD:
             raise Timeout()
 
         # TODO: finish this function!
-        return self.minimax(game, depth,True)
-        raise NotImplementedError
+        return self.max_val( game, depth, alpha, beta,maximizing_player)
+        
