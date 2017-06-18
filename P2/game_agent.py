@@ -13,6 +13,41 @@ class Timeout(Exception):
     """Subclass base exception for code clarity."""
     pass
 
+def penalize_and_reward(game, player,reward_coffiecient=2,penalty_coefficient=2):
+	"""
+	Reward the player with reward_coffiecient for the number of moves he has.
+	Penalize the opponent player with penalty_coefficient for the number of moves he has.
+	"""
+	if game.is_winner(player):
+		return float("inf")
+	elif game.is_loser(player):
+		return float("-inf")
+	else:
+		my_move_count = len(game.get_legal_moves(player))
+		opp_move_count = len(game.get_legal_moves(game.get_opponent(player)))
+		
+		return float(abs(reward_coffiecient*my_move_count - penalty_coefficient*opp_move_count))
+
+def custom_score_1(game, player):
+	"""
+	High Reward for the number of moves the player has, and low penalty 
+	for the number of moves opponent has
+	"""
+	return penalize_and_reward(game,player,5,2)
+	
+def custom_score_2(game, player):
+	"""
+	Low Reward for the number of moves the player has, and High penalty 
+	for the number of moves opponent has
+	"""
+	return penalize_and_reward(game,player,2,5)	
+	
+def custom_score_3(game, player):
+	"""
+	1 Reward for the number of moves the player has, and 1 penalty 
+	for the number of moves opponent . (Equal rewards and penalty)
+	"""
+	return penalize_and_reward(game,player,1,1)	
 
 def custom_score(game, player):
     """Calculate the heuristic value of a game state from the point of view
@@ -38,7 +73,7 @@ def custom_score(game, player):
     """
 
     # TODO: finish this function!
-    raise NotImplementedError
+    return custom_score_1(game, player)
 
 
 class CustomPlayer:
@@ -186,7 +221,8 @@ class CustomPlayer:
 
         if self.time_left() < self.TIMER_THRESHOLD:
             raise Timeout()
-
+		
+		
         if (depth == 0):                                
             return self.score(game,self),(-1,-1) 
         
@@ -209,13 +245,17 @@ class CustomPlayer:
         return best_score, best_move
      
     def max_val(self, game, depth, alpha, beta,maximizing_player):
+	
+        if self.time_left() < self.TIMER_THRESHOLD:
+            raise Timeout()	
 
-        if (depth == 0):                                
+        moves = game.get_legal_moves()
+		
+        if (depth == 0 or len(moves) == 0):                                
             return self.score(game,self),(-1,-1)     
-                        
-        moves = game.get_legal_moves()        
+                                
 
-        max_score = -9999
+        max_score = float("-inf")
         max_move_idx = -1
 
         for idx,move in enumerate(moves):                                 
@@ -234,13 +274,15 @@ class CustomPlayer:
         return max_score,moves[max_move_idx]
 
     def min_val(self, game, depth, alpha, beta,maximizing_player):
-
-        if (depth == 0):                                
+        
+        moves = game.get_legal_moves()
+		
+        if (depth == 0 or len(moves) == 0):                                
             return self.score(game,self),(-1,-1)     
                         
         moves = game.get_legal_moves()        
 
-        min_score = +9999
+        min_score = float("inf")
         min_move_idx = -1        
 
         for idx,move in enumerate(moves):                                 
@@ -255,7 +297,8 @@ class CustomPlayer:
             if score < min_score:
                 min_score = score
                 min_move_idx = idx            
-
+		
+        
         return min_score,moves[min_move_idx]
 
 
